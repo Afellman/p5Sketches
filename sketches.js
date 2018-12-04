@@ -20,9 +20,9 @@ let sketches = {
     
     function setup() {
       circles = [];
-      // for (var i = 0; i < 100; i++) {
-      //   circles.push(new _Ellipse())
-      // }
+      for (var i = 0; i < 100; i++) {
+        circles.push(new _Ellipse())
+      }
 
       noFill();
       strokeWeight(3);
@@ -122,13 +122,9 @@ let sketches = {
     
     function setup() {
       w1 = new Walker();
-      w1.makeArray();
       w2 = new Walker();
-      w2.makeArray();
       w3 = new Walker();
-      w3.makeArray();
       w4 = new Walker();
-      w4.makeArray();
       background(0);
     }
 

@@ -8,6 +8,8 @@ var isSong = false;
 var currentSketch = "lines";
 var alphaNum = 0;
 
+var sketchArray = ["rings", "walker", "lines"];
+
 
 /*************************************************
  * P5 Functions
@@ -118,11 +120,11 @@ function sketchTransition(velocity){
 // }
 
 function switchSketch() {
-  // just sweitching between the two for now.
-  if (currentSketch == "rings") {
-    currentSketch = 'walker';
+  var nextPos = sketchArray.indexOf(currentSketch) + 1;
+  if (nextPos < sketchArray.length){
+    currentSketch = sketchArray[nextPos];
   } else {
-    currentSketch = 'lines';
+    currentSketch = sketchArray[0];
   }
   sketches[currentSketch].setup();
 }
@@ -164,6 +166,11 @@ document.addEventListener('keydown', function (event) {
   }
 })
 
+document.addEventListener('keydown', function(event){
+   if(event.keyCode == 32){
+     switchSketch();
+   }
+})
 
 /*************************************************
  * MIDI Stuff
