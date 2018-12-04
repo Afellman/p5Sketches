@@ -201,11 +201,13 @@ let sketches = {
     let lineAmt = 200;
     let timer = 0;
     function setup() {
+      lines = [];  
+      lines2 = []; 
       background(255)
       for(let i =0; i < lineAmt; i ++){
         let xMap = map(i, 0, lineAmt, 0, width);
         lines.push(new Line(xMap, height /2, xMap, height));
-        lines2.push(new Line(xMap, height, xMap, height /2));
+        // lines2.push(new Line(xMap, height, xMap, height /2));
       }  
     }
 
