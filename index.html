@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
+  <title>Document</title>
+</head>
+<style>
+  html, body {
+    padding: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+  }
+
+#deviceSelectDiv {
+  background: rgb(39, 171, 186);
+  padding: 10px;
+  position: fixed;
+  left: 0;
+  top:0;
+  /* transition: .5s; */
+  transition: opacity .5s;
+  
+  
+}
+
+#deviceSelect {
+  list-style: none;
+  padding-inline-start: 0;
+  margin: 0;  
+}
+
+#selectedDevice { 
+  background: white;
+}
+
+.showMe {
+  /* display: block; */
+  opacity: 1;
+}
+
+.hideMe {
+  /* display: none; */
+  opacity: 0;
+}
+
+
+
+</style>
+<body>
+  <div id='deviceSelectDiv' class='hideMe'>
+  </div>
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+<script src="p5.js"></script>
+<script src="p5.sound.js"></script>
+<script src="sketches.js"></script>
+<script src="sketch.js"></script>
+</html>
