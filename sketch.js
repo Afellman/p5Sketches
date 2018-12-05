@@ -25,32 +25,32 @@ var sketchArray = ["rings", "walker", "lines"];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-  sound = new p5.AudioIn();
-  amp = new p5.Amplitude();
+  // sound = new p5.AudioIn();
+  // amp = new p5.Amplitude();
 
-  sound.getSources(function (deviceList) {
-    //print out the array of available sources
-    console.log('Devices available: ', deviceList);
-    devices = deviceList;
-    deviceIndex = 0
-    //set the source to the first item in the deviceList array
-    console.log(song, isSong)
-    sound.setSource(deviceIndex);
+  // sound.getSources(function (deviceList) {
+  //   //print out the array of available sources
+  //   console.log('Devices available: ', deviceList);
+  //   devices = deviceList;
+  //   deviceIndex = 0
+  //   //set the source to the first item in the deviceList array
+  //   console.log(song, isSong)
+  //   sound.setSource(deviceIndex);
 
-    sound.amp(1);
-    sound.start();
-    // setting the input to the fft object.
-    if (isSong) {
-      song.loop();
-      amp.setInput(song)
-    } else {
-      amp.setInput(sound);
-    }
+  //   sound.amp(1);
+  //   sound.start();
+  //   // setting the input to the fft object.
+  //   if (isSong) {
+  //     song.loop();
+  //     amp.setInput(song)
+  //   } else {
+  //     amp.setInput(sound);
+  //   }
 
-    devicesToDom(devices);
+  //   devicesToDom(devices);
 
-    showDeviceSelect();
-  });
+  //   showDeviceSelect();
+  // });
   background(0);
   // Switching to first sketch to initialize 
   switchSketch();
@@ -58,7 +58,8 @@ function setup() {
 
 
 function draw() {
-  var vol = amp.getLevel();
+  // var vol = amp.getLevel();
+  var vol = 0;
   // Calling sketch specific draw function.
   // Need to scale down volume...
   var volMapped = map(vol, 0, 1, 0, 100);

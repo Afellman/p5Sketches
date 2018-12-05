@@ -202,7 +202,7 @@ let sketches = {
     function setup() {
       lines = [];  
       lines2 = []; 
-      background(0)
+      background(255)
       for(let i =0; i < lineAmt; i ++){
         // let xMap = map(i, 0, lineAmt, 0, width);
         let angle = radians(i);
@@ -222,9 +222,9 @@ let sketches = {
 
     function draw() {
       timer+= .5
-      background(0, 5)
+      background(255, 40)
       let linesLength = lines.length;
-      stroke(255, 60)
+      stroke(100, 30)
       for(let i = 0; i < linesLength; i ++){
         // IN future initiate this with midi key
         lines[i].wave(i)
@@ -244,10 +244,9 @@ let sketches = {
     }
 
     Line.prototype.wave = function(i){
-      var deg = map(i, 0, lineAmt, 0, 360);
-      var rad = radians(timer * 2) + (i / 10)
-      this.y1 += sin(rad) 
-      this.x2 += sin(rad) 
+      var rad = radians(timer)
+      this.y1 += sin(rad + i) 
+      this.y2 += cos(rad + i) 
         // this.x1 += (sin(rad) * timer)
         // this.x2 = (rad)
         if(timer >1000000){
