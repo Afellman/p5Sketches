@@ -5,7 +5,7 @@ var deviceIndex;
 var song;
 var isSong = false;
 
-var currentSketch = "lines";
+var currentSketch = "walker";
 var alphaNum = 0;
 
 var sketchArray = ["rings", "walker", "lines"];

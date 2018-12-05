@@ -197,29 +197,38 @@ let sketches = {
   lines : function () {
    
     let lines = [];  
-    let lines2 = [];  
-    let lineAmt = 200;
+    let lineAmt = 360;
     let timer = 0;
+    let radius = 200;
     function setup() {
       lines = [];  
       lines2 = []; 
       background(255)
       for(let i =0; i < lineAmt; i ++){
-        let xMap = map(i, 0, lineAmt, 0, width);
-        lines.push(new Line(xMap, height /2, xMap, height));
+        // let xMap = map(i, 0, lineAmt, 0, width);
+        let angle = radians(i);
+        let xCenter = width / 2;
+        let yCenter = width / 2;
+
+        let x = xCenter + sin(angle) * radius;
+        let y = yCenter + cos(angle) * radius;
+
+        let x2 = xCenter + sin(angle * 10) * radius;
+        let y2 = yCenter + cos(angle * 10) * radius;
+        lines.push(new Line(x, y, x2, y2));
         // lines2.push(new Line(xMap, height, xMap, height /2));
       }  
     }
 
     function draw() {
-      timer++
+      timer+= .5
       background(0, 10)
       let linesLength = lines.length;
-      stroke(255, 60)
+      stroke(255, 120, 20, 60)
       for(let i = 0; i < linesLength; i ++){
         // IN future initiate this with midi key
         lines[i].wave(i)
-        ellipse(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)
+        line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)
         // lines2[i].wave(i)
         // line(lines2[i].x1, lines2[i].y1, lines2[i].x2, lines2[i].y2)
       }
@@ -235,9 +244,6 @@ let sketches = {
     }
 
     Line.prototype.wave = function(i){
-      var rad = radians(timer / 4) + (i / 10)
-        this.y1 += sin(rad) 
-        // this.x2 = (rad)
         if(timer >1000000){
           timer = 0
         }
