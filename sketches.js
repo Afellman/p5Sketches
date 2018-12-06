@@ -194,43 +194,54 @@ let sketches = {
     }
   }(),
 
+  /*************************************************
+   * Random Walker 
+  *************************************************/
   lines : function () {
    
     let lines = [];  
     let lineAmt = 360;
-    let timer = 0;
+    let timer = 1;
+    let angle;
+    let xCenter;
+    let yCenter;
+    let radius;
+    let angleMultiplyer = 1.1
+    let direction = 1
     function setup() {
       lines = [];  
       lines2 = []; 
-      background(255)
+      background(10)
       for(let i =0; i < lineAmt; i ++){
         // let xMap = map(i, 0, lineAmt, 0, width);
-        let angle = radians(i);
-        let xCenter = width / 2;
-        let yCenter = width / 2;
-        let radius = width / 2;
+        angle = radians(i);
+        xCenter = width / 2;
+        yCenter = height;
+        radius = height > width ?  width /2 : height /2;
 
         let x = xCenter + sin(angle) * radius;
         let y = yCenter + cos(angle) * radius;
 
-        let x2 = xCenter + sin(angle * 10) * radius;
-        let y2 = yCenter + cos(angle * 10) * radius;
+        let x2 = xCenter + sin(angle * angleMultiplyer) * radius;
+        let y2 = yCenter + cos(angle * angleMultiplyer) * radius;
         lines.push(new Line(x, y, x2, y2));
         // lines2.push(new Line(xMap, height, xMap, height /2));
       }  
     }
 
     function draw() {
-      timer+= .5
-      background(255, 40)
-      let linesLength = lines.length;
-      stroke(100, 30)
-      for(let i = 0; i < linesLength; i ++){
+      timer+= .05 * direction;
+      background(10, 30)
+      stroke(100, 60)
+      for(let i = 0; i < lineAmt; i ++){
         // IN future initiate this with midi key
         lines[i].wave(i)
         line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)
-        // lines2[i].wave(i)
-        // line(lines2[i].x1, lines2[i].y1, lines2[i].x2, lines2[i].y2)
+      }
+      if(timer > 100){
+        direction = -direction
+      } else if(timer < -100){
+        direction = -direction
       }
     }
 
@@ -244,14 +255,13 @@ let sketches = {
     }
 
     Line.prototype.wave = function(i){
-      var rad = radians(timer)
-      this.y1 += sin(rad + i) 
-      this.y2 += cos(rad + i) 
-        // this.x1 += (sin(rad) * timer)
-        // this.x2 = (rad)
-        if(timer >1000000){
-          timer = 0
-        }
+      var radi = radians(timer)
+      let rad = radians(i)
+      this.x2 = xCenter + sin(rad * timer) * radius;
+      this.y2 = yCenter + cos(rad * timer) * radius;
+      this.x1 = map(i, 0, lineAmt, 0, width)
+      this.y1 = 0
+        
       // if(timer % 10 == 0){
       //   this.waveDirection = -this.waveDirection
       // } else if(this.y1 <= 0){
@@ -261,13 +271,20 @@ let sketches = {
 
     
     function onMidiNote(note, velocity){
-
+      let velMap = map(velocity, 0, 127, 0, 100);
+      switch(note){
+        case 15:
+          angleMultiplyer = velMap;
+          break;
+        case 14:
+          break;
+      }
     }
 
     return {
       setup : setup,
       draw: draw,
-      onMidiNode : onMidiNote
+      onMidiNote : onMidiNote
     }
   }(),
 }

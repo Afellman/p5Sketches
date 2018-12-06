@@ -25,6 +25,9 @@ var sketchArray = ["rings", "walker", "lines"];
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
+
+  /* Uncomment all this to use the mic */
+
   // sound = new p5.AudioIn();
   // amp = new p5.Amplitude();
 
@@ -58,6 +61,8 @@ function setup() {
 
 
 function draw() {
+  
+  /* Uncomment this to use the mic */
   // var vol = amp.getLevel();
   var vol = 0;
   // Calling sketch specific draw function.
@@ -90,7 +95,7 @@ function showDeviceSelect() {
 
 function fadeOutz() {
   fill(0, alphaNum);
-  rect(0, 0, width, height)
+  rect(0, 0, width, height);
 }
 
 function sketchTransition(velocity){
@@ -190,16 +195,18 @@ function getMIDIMessage(midiMessage) {
   var note = midiMessage.data[1];
   var velocity = (midiMessage.data.length > 2) ? midiMessage.data[2] : 0;
   console.log(note, velocity, command)
-  switch(note){
-    case 40:
+  if(velocity > 0){
+    switch(note){
+      case 1:
       switchSketch();
       break;
-    case 8:
+      case 10:
       sketchTransition(velocity)
       break;
-    default:
+      default:
       sketches[currentSketch].onMidiNote(note, velocity);
-  } 
+    } 
+  }
 }
 
 function onMIDIFailure() {
