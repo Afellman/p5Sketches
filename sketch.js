@@ -8,7 +8,7 @@ var isSong = false;
 var currentSketch = "walker";
 var alphaNum = 0;
 
-var sketchArray = ["rings", "walker", "lines"];
+var sketchArray = Object.keys(sketches);
 
 
 /*************************************************

@@ -195,23 +195,24 @@ let sketches = {
   }(),
 
   /*************************************************
-   * Random Walker 
+   * Ball 
   *************************************************/
-  lines : function () {
+  ball : function () {
    
-    let lines = [];  
+    let lines;
     let lineAmt = 360;
-    let timer = 1;
+    let timer;
     let angle;
     let xCenter;
     let yCenter;
     let radius;
     let angleMultiplyer = 1.1
     let direction = 1
+ 
     function setup() {
+      timer = 1
       lines = [];  
-      lines2 = []; 
-      background(10)
+      background(0)
       for(let i =0; i < lineAmt; i ++){
         // let xMap = map(i, 0, lineAmt, 0, width);
         angle = radians(i);
@@ -225,7 +226,6 @@ let sketches = {
         let x2 = xCenter + sin(angle * angleMultiplyer) * radius;
         let y2 = yCenter + cos(angle * angleMultiplyer) * radius;
         lines.push(new Line(x, y, x2, y2));
-        // lines2.push(new Line(xMap, height, xMap, height /2));
       }  
     }
 
@@ -234,7 +234,6 @@ let sketches = {
       background(10, 30)
       stroke(100, 60)
       for(let i = 0; i < lineAmt; i ++){
-        // IN future initiate this with midi key
         lines[i].wave(i)
         line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)
       }
@@ -251,7 +250,6 @@ let sketches = {
       this.y1 = y1;
       this.x2 = x2
       this.y2 = y2;
-      this.waveDirection = 1;
     }
 
     Line.prototype.wave = function(i){
@@ -261,12 +259,6 @@ let sketches = {
       this.y2 = yCenter + cos(rad * timer) * radius;
       this.x1 = map(i, 0, lineAmt, 0, width)
       this.y1 = 0
-        
-      // if(timer % 10 == 0){
-      //   this.waveDirection = -this.waveDirection
-      // } else if(this.y1 <= 0){
-      //   this.waveDirection = -this.waveDirection
-      // }
     }
 
     
@@ -287,4 +279,34 @@ let sketches = {
       onMidiNote : onMidiNote
     }
   }(),
+
+  /*************************************************
+   * Dunno Yet 
+  *************************************************/
+  lines : function () {
+   
+    let vectors;
+    
+    function setup() {
+     
+    }
+
+    function draw() {
+     
+    }
+
+ 
+
+    
+    function onMidiNote(note, velocity){
+
+    }
+
+    return {
+      setup : setup,
+      draw: draw,
+      onMidiNote : onMidiNote
+    }
+  }(),
+
 }
