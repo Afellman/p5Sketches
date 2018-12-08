@@ -287,7 +287,7 @@ let sketches = {
    
     let vectors;
     let points = [];
-    let pointsAmt = 250;
+    let pointsAmt = 150;
     
     function setup() {
      background(0)
@@ -312,10 +312,13 @@ let sketches = {
     }
 
     Point.prototype.walk = function(i){
-      i = i + 1;
-      i == pointsAmt ? i = 0 : i = i
+      // Can use i as first argument of sub to have each point follow the previous one
+      // i = i + 1;
+      // i == pointsAmt ? i = 0 : i = i;
+      
+      let iMap = map(i, 0, pointsAmt, 0, 360);
       let rand = createVector(random(-4, 4), random(-4, 4));
-      let rad = radians(i)
+      let rad = radians(iMap)
       let sine = mouseX + sin(rad) * 75 
       let cosine = mouseY + cos(rad) * 75
       let prev = createVector(sine, cosine);
