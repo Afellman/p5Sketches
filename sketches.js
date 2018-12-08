@@ -287,7 +287,7 @@ let sketches = {
    
     let vectors;
     let points = [];
-    let pointsAmt = 500;
+    let pointsAmt = 250;
     
     function setup() {
      background(0)
