@@ -358,7 +358,12 @@ let sketches = {
     }
 
     function draw() {
-    
+      background(0);
+      stroke(255)
+      let mouse = createVector(mouseX, mouseY);
+      let center = createVector(width/2, height/2);
+      // mouse.sub(center);
+      line(center.x, center.y, mouse.x, mouse.y)
     }
 
     function onMidiNote(note, velocity){
