@@ -281,23 +281,106 @@ let sketches = {
   }(),
 
   /*************************************************
-   * Dunno Yet 
+   * Swarm
   *************************************************/
-  lines : function () {
+  swarm : function () {
    
     let vectors;
+    let points = [];
+    let pointsAmt = 500;
     
     function setup() {
-     
+     background(0)
+      for(let i = 0; i < pointsAmt; i++){
+        points.push(new Point())
+      }
     }
 
     function draw() {
-     
+     background(15, 80);
+     for(let i = 0; i < pointsAmt; i++){
+       points[i].walk(i);
+       points[i].display();
+
+     }
     }
 
- 
+    function Point() {
+      this.pos = createVector(width/2, height /2 );
+      this.vel = createVector(0);
 
+    }
+
+    Point.prototype.walk = function(i){
+      i = i + 1;
+      i == pointsAmt ? i = 0 : i = i
+      let rand = createVector(random(-4, 4), random(-4, 4));
+      let rad = radians(i)
+      let sine = width /2 + sin(rad) * 150 
+      let cosine = height /2 + cos(rad) * 150
+      let prev = createVector(sine, cosine);
+      this.acc = p5.Vector.sub(prev, this.pos);
+      this.acc.normalize() 
+      this.acc.add(rand);
+      this.acc.mult(2);
+      // this.vel.add(this.acc)
+      this.pos.add(this.acc);
+    }
+    Point.prototype.display = function(){
+      stroke(255, 80);
+      // fill(255, 80);
+      ellipse(this.pos.x, this.pos.y, 20);
+    }
+
+    function onMidiNote(note, velocity){
+
+    }
+
+    return {
+      setup : setup,
+      draw: draw,
+      onMidiNote : onMidiNote
+    }
+  }(),
+
+
+/*************************************************
+ * New
+*************************************************/
+
+  new : function () {
+   
+    function setup() {
+     background(0)
+    }
+
+    function draw() {
     
+    }
+
+    function onMidiNote(note, velocity){
+
+    }
+
+    return {
+      setup : setup,
+      draw: draw,
+      onMidiNote : onMidiNote
+    }
+  }(),
+
+
+
+  new1 : function () {
+   
+    function setup() {
+     background(0)
+    }
+
+    function draw() {
+    
+    }
+
     function onMidiNote(note, velocity){
 
     }

@@ -126,12 +126,13 @@ function sketchTransition(velocity){
 // }
 
 function switchSketch() {
-  var nextPos = sketchArray.indexOf(currentSketch) + 1;
-  if (nextPos < sketchArray.length){
-    currentSketch = sketchArray[nextPos];
-  } else {
-    currentSketch = sketchArray[0];
-  }
+  // var nextPos = sketchArray.indexOf(currentSketch) + 1;
+  // if (nextPos < sketchArray.length){
+  //   currentSketch = sketchArray[nextPos];
+  // } else {
+  //   currentSketch = sketchArray[0];
+  // }
+  currentSketch = "new1"
   sketches[currentSketch].setup();
 }
 
