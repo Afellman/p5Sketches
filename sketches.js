@@ -316,8 +316,8 @@ let sketches = {
       i == pointsAmt ? i = 0 : i = i
       let rand = createVector(random(-4, 4), random(-4, 4));
       let rad = radians(i)
-      let sine = width /2 + sin(rad) * 150 
-      let cosine = height /2 + cos(rad) * 150
+      let sine = mouseX + sin(rad) * 75 
+      let cosine = mouseY + cos(rad) * 75
       let prev = createVector(sine, cosine);
       this.acc = p5.Vector.sub(prev, this.pos);
       this.acc.normalize() 

@@ -132,7 +132,7 @@ function switchSketch() {
   // } else {
   //   currentSketch = sketchArray[0];
   // }
-  currentSketch = "new1"
+  currentSketch = "swarm"
   sketches[currentSketch].setup();
 }
 
