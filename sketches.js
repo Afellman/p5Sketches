@@ -16,7 +16,7 @@ let sketches = {
     let rDirect = 1
     let gDirect = 1
     let bDirect = 1
-    var circles;
+    let circles;
 
     function setup() {
       circles = [];
@@ -275,7 +275,7 @@ let scale = 4
 
     function setup() {
       points = [];
-      pointsAmt = 150;
+      pointsAmt = 250;
       background(0)
       for (let i = 0; i < pointsAmt; i++) {
         points.push(new Point())
@@ -334,31 +334,28 @@ let scale = 4
 
 
   /*************************************************
-   * New
+   * Bouncy Balls
   *************************************************/
 
-  new: function () {
+  bouncyBalls: function () {
 
     let particles;
     let particleAmt;
 
     function setup() {
       particles = [];
-      particleAmt = 100;
+      particleAmt = 10;
       background(0);
       
       for(let i = 0; i < particleAmt; i++){
         let x = map(i, 0, particleAmt, 0, width);
-        particles.push(new Particle(i, x, height/2))
+        particles.push(new Particle(i*5, x, height/2))
       }
 
     }
 
     function draw() {
       background(0);
-
-    
-
 
       for(let i = 0; i < particleAmt; i ++){
         let gravity = createVector(0, 0.2 * particles[i].size);
@@ -428,25 +425,101 @@ let scale = 4
 
 
 
-  // new1: function () {
+  new1: function () {
 
-  //   function setup() {
-  //     background(0)
-  //   }
+    let angle = 0.67;
+    let tree; 
+    let count = 1;
+    let branchAmt = 1000
+    let windDirection = 1;
 
-  //   function draw() {
+    function setup() {
+      tree = [];
+      var a = createVector(width / 2, height);
+      var b = createVector(width / 2, height -50);
+      var root = new Branch(a, b)
 
-  //   }
+      tree[0] = root;
+      for(var i = 0; i < branchAmt; i ++){
+        tree.push(tree[i].branch(PI / 6))
+        tree.push(tree[i].branch(-PI / 4))
+      }
 
-  //   function onMidiNote(note, velocity) {
+      for(var i = tree.length -1; i > (tree.length/2) -1; i--){
+        // tree[i].leafFunc()
+      }
+    }
+    
+    function draw() {
+      background(0)
+      
+      for(var i = 0; i < tree.length; i++){
+        let wind = createVector(0.1, 0);
+        // tree[i].applyWind(wind);
+        // tree[i].update();
+        tree[i].show();
+      }
+      if(count % 100 == 0){
+        windDirection = -windDirection;
+      }
+      count++;
+    }
 
-  //   }
+    function Branch(start, end) {
+      this.start = start;
+      this.end = end;
+      this.vel = createVector(0, 0);
+      this.acc = createVector(0, 0);
+    }
 
-  //   return {
-  //     setup: setup,
-  //     draw: draw,
-  //     onMidiNote: onMidiNote
-  //   }
-  // }(),
+    Branch.prototype.show = function(){
+      stroke(255);
+      line(this.start.x, this.start.y, this.end.x, this.end.y);
+      fill(255, 0, 0)
+      if(this.leaf){
+        ellipse(this.leaf.x, this.leaf.y, 10)
+      }
+    }
 
+    Branch.prototype.branch = function(rote){
+      var dir = p5.Vector.sub(this.end, this.start);
+      dir.rotate(rote);
+      dir.mult(angle);
+      var newEnd = p5.Vector.add(this.end, dir);
+      var b = new Branch(this.end, newEnd);
+      return b;
+    }
+
+    Branch.prototype.leafFunc = function () {
+      this.leaf = createVector(this.end.x, this.end.y)
+    }
+
+    Branch.prototype.applyWind = function(force){
+      // force = force.normalize()
+      this.acc = force;
+    }
+
+    Branch.prototype.update = function () {
+      this.vel = this.acc;
+      // this.vel.add(this.acc);
+      if(windDirection == 1){
+        this.end.add(this.vel);
+        this.leaf ? this.leaf.add(this.vel) : null;
+        
+      } else {
+        this.leaf ? this.leaf.sub(this.vel) : null;
+        this.end.sub(this.vel);
+      }
+    }
+
+    function onMidiNote(note, velocity) {
+
+    }
+
+    return {
+      setup: setup,
+      draw: draw,
+      onMidiNote: onMidiNote
+    }
+  }(),
 }
