@@ -5,7 +5,7 @@ var deviceIndex;
 var song;
 var isSong = false;
 
-var currentSketch = "walker";
+var currentSketch = "bouncyBalls";
 var alphaNum = 0;
 
 var sketchArray = Object.keys(sketches);
@@ -64,7 +64,7 @@ function draw() {
   
   /* Uncomment this to use the mic */
   // var vol = amp.getLevel();
-  var vol = 0;
+  var vol = 0; 
   // Calling sketch specific draw function.
   // Need to scale down volume...
   var volMapped = map(vol, 0, 1, 0, 100);
@@ -150,6 +150,18 @@ function devicesToDom(devices) {
   div.appendChild(ul);
 }
 
+
+(function sketchesToDom(){
+  console.log(sketchArray)
+  var ul = document.getElementById('sketchSelectDiv');
+  for(var i = 0; i < sketchArray.lenth; i++){
+    var li = document.createElement('li');
+    var text = document.createTextNode('Sketch:' + sketchArray[i])
+    li.setAttribute('id', sketchArray[i]);
+    li.appendChild(text)
+    ul.appendChild(li)  
+  }
+})();
 
 /*************************************************
  * Dom Listeners
