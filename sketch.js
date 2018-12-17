@@ -4,6 +4,10 @@ var devices;
 var deviceIndex;
 var song;
 var isSong = false;
+let imagePath = "./the-unspoken-path-to-another.jpg";
+let maxPal = 512;
+let numPal = 0;
+let goodColor = [];
 
 var currentSketch = "bouncyBalls";
 var alphaNum = 0;
@@ -25,7 +29,7 @@ var sketchArray = Object.keys(sketches);
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
-
+  takeColor(imagePath);
   /* Uncomment all this to use the mic */
 
   // sound = new p5.AudioIn();
@@ -68,7 +72,7 @@ function draw() {
   // Calling sketch specific draw function.
   // Need to scale down volume...
   var volMapped = map(vol, 0, 1, 0, 100);
-  sketches[currentSketch].draw(volMapped / 4);
+  sketches[currentSketch].drawThis(volMapped / 4);
   fadeOutz();
 }
 
@@ -103,6 +107,9 @@ function sketchTransition(velocity){
   alphaNum = velMapped;
 }
 
+function mouseClicked(){
+  sketches[currentSketch].mouseClicked();
+};
 // USE THESE TWO TO INITIATE A SMOOTH TRANSITION
 // function sketchTransition() {
 //   var color;
@@ -126,14 +133,13 @@ function sketchTransition(velocity){
 // }
 
 function switchSketch() {
-  // var nextPos = sketchArray.indexOf(currentSketch) + 1;
-  // if (nextPos < sketchArray.length){
-  //   currentSketch = sketchArray[nextPos];
-  // } else {
-  //   currentSketch = sketchArray[0];
-  // }
-  currentSketch = "new"
-  sketches[currentSketch].setup();
+  var nextPos = sketchArray.indexOf(currentSketch) + 1;
+  if (nextPos < sketchArray.length){
+    currentSketch = sketchArray[nextPos];
+  } else {
+    currentSketch = sketchArray[0];
+  }
+  sketches[currentSketch].setupThis();
 }
 
 function devicesToDom(devices) {
@@ -162,6 +168,62 @@ function devicesToDom(devices) {
     ul.appendChild(li)  
   }
 })();
+
+/*************************************************
+ * Colors
+ *************************************************/
+
+function someColor() {
+  // pick some random good color
+  return goodColor[int(random(numPal))];
+}
+
+function getPixel(context, x, y) {
+  return context.getImageData(x, y, 1, 1).data;
+}
+
+function takeColor(path) {
+  var canvas = document.getElementById('defaultCanvas0');
+  var context = canvas.getContext('2d');
+  loadImage(path, function (b) {
+    image(b,0,0);
+    console.log(b)
+    for (let x = 0; x < b.width; x++) {
+      for (let y = 0; y < b.height; y++) {
+        let c = getPixel(context, x, y);
+        let exists = false;
+        for (let n = 0; n < numPal; n++) {
+          if (c == goodColor[n]) {
+            exists = true;
+            break;
+          }
+        }
+        if (!exists) {
+          // add color to pal
+          if (numPal < maxPal) {
+            goodColor[numPal] = c;
+            numPal++;
+          } else {
+            break;
+          }
+        }
+        if (random(10000) < 100) {
+          if (numPal < maxPal) {
+            // pump black or white into palette
+            if (random(100) < 50) {
+              goodColor[numPal] = '#FFFFFF';
+              print("w");
+            } else {
+              goodColor[numPal] = '#000000';
+              print("b");
+            }
+            numPal++;
+          }
+        }
+      }
+    }
+  });
+}
 
 /*************************************************
  * Dom Listeners

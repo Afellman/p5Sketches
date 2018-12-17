@@ -1,6 +1,6 @@
 /*
   Module of different p5 sketches. Each on can be plugged into a sketch.js file,
-  calling their setup and draw functions in their respective p5 functions.
+  calling their setupThis and drawThis functions in their respective p5 functions.
 
 */
 
@@ -18,7 +18,7 @@ let sketches = {
     let bDirect = 1
     let circles;
 
-    function setup() {
+    function setupThis() {
       circles = [];
       for (var i = 0; i < 100; i++) {
         circles.push(new _Ellipse())
@@ -29,7 +29,7 @@ let sketches = {
       smooth(1)
     }
 
-    function draw(vol) {
+    function drawThis(vol) {
       var circleIncrease = 20;
       r += .3 * rDirect;
       g += .5 * gDirect;
@@ -102,8 +102,8 @@ let sketches = {
       }
     }
     return {
-      setup: setup,
-      draw: draw,
+      setupThis: setupThis,
+      drawThis: drawThis,
       onMidiNote: onMidiNote
     }
   }(),
@@ -114,18 +114,18 @@ let sketches = {
   *************************************************/
   walker: function () {
     let walkerArray = [];
-let walkerAmt = 250;
-let scale = 4
+    let walkerAmt = 250;
+    let scale = 4
 
-    function setup() {
-      for(let i = 0; i < walkerAmt; i ++){
+    function setupThis() {
+      for (let i = 0; i < walkerAmt; i++) {
         walkerArray.push(new Walker());
-      }  
+      }
       background(0);
     }
 
-    function draw() {
-      for(let i = 0; i < walkerAmt; i ++){
+    function drawThis() {
+      for (let i = 0; i < walkerAmt; i++) {
         walkerArray[i].display();
         walkerArray[i].step();
       }
@@ -139,19 +139,21 @@ let scale = 4
     }
     Walker.prototype.display = function () {
       noStroke();
-      fill(255, 10);
+      let color = someColor();
+      fill(color[0], color[1], color[2], 10)
+      // fill(255, 10); 
       ellipse(this.x, this.y, scale);
     }
     // Function to "step" the walker in one random direction 
     // by the same size as the walker.
-    Walker.prototype.step = function (){
+    Walker.prototype.step = function () {
       let stepX = (int(random(3)) - 1);
       let stepY = (int(random(3)) - 1);
       this.preventOffScreen();
       this.x += stepX * scale;
       this.y += stepY * scale;
     }
-    
+
     // Function to stop the walker from going off the screen. If the walkers
     Walker.prototype.preventOffScreen = function () {
       if (this.x < 1) {
@@ -172,8 +174,8 @@ let scale = 4
     }
 
     return {
-      setup: setup,
-      draw: draw,
+      setupThis: setupThis,
+      drawThis: drawThis,
       onMidiNote: onMidiNote
     }
   }(),
@@ -193,7 +195,7 @@ let scale = 4
     let angleMultiplyer = 1.1
     let direction = 1
 
-    function setup() {
+    function setupThis() {
       timer = 1
       lines = [];
       background(0)
@@ -213,7 +215,7 @@ let scale = 4
       }
     }
 
-    function draw() {
+    function drawThis() {
       timer += .05 * direction;
       background(10, 30)
       stroke(100, 60)
@@ -258,8 +260,8 @@ let scale = 4
     }
 
     return {
-      setup: setup,
-      draw: draw,
+      setupThis: setupThis,
+      drawThis: drawThis,
       onMidiNote: onMidiNote
     }
   }(),
@@ -273,7 +275,7 @@ let scale = 4
     let points;
     let pointsAmt;
 
-    function setup() {
+    function setupThis() {
       points = [];
       pointsAmt = 250;
       background(0)
@@ -282,7 +284,7 @@ let scale = 4
       }
     }
 
-    function draw() {
+    function drawThis() {
       background(15, 80);
       for (let i = 0; i < pointsAmt; i++) {
         points[i].walk(i);
@@ -326,8 +328,8 @@ let scale = 4
     }
 
     return {
-      setup: setup,
-      draw: draw,
+      setupThis: setupThis,
+      drawThis: drawThis,
       onMidiNote: onMidiNote
     }
   }(),
@@ -342,26 +344,26 @@ let scale = 4
     let particles;
     let particleAmt;
 
-    function setup() {
+    function setupThis() {
       particles = [];
       particleAmt = 10;
       background(0);
-      
-      for(let i = 0; i < particleAmt; i++){
+
+      for (let i = 0; i < particleAmt; i++) {
         let x = map(i, 0, particleAmt, 0, width);
-        particles.push(new Particle(i*5, x, height/2))
+        particles.push(new Particle(i * 5, x, height / 2))
       }
 
     }
 
-    function draw() {
+    function drawThis() {
       background(0);
 
-      for(let i = 0; i < particleAmt; i ++){
+      for (let i = 0; i < particleAmt; i++) {
         let gravity = createVector(0, 0.2 * particles[i].size);
         let wind = createVector(0.5, 0);
         particles[i].applyForce(gravity)
-        if(mouseIsPressed){
+        if (mouseIsPressed) {
           particles[i].applyForce(wind);
         }
         particles[i].update();
@@ -377,26 +379,26 @@ let scale = 4
       this.size = _size;
     }
 
-    Particle.prototype.applyForce = function(force){
+    Particle.prototype.applyForce = function (force) {
       force = force.normalize()
       force.div(this.size)
-      this.acc =(force);
+      this.acc = (force);
     }
 
-    Particle.prototype.edges = function() {
-      if(this.pos.y > height){
+    Particle.prototype.edges = function () {
+      if (this.pos.y > height) {
         this.vel.y *= -1;
         this.pos.y = height;
       }
-      if(this.pos.y < 0){
+      if (this.pos.y < 0) {
         this.vel.y *= -1;
         this.pos.y = 0;
       }
-      if(this.pos.x > width){
+      if (this.pos.x > width) {
         this.vel.x *= -1;
         this.pos.x = width;
       }
-      if(this.pos.x < 0){
+      if (this.pos.x < 0) {
         this.vel.x *= -1;
         this.pos.x = 0;
       }
@@ -417,109 +419,60 @@ let scale = 4
     }
 
     return {
-      setup: setup,
-      draw: draw,
+      setupThis: setupThis,
+      drawThis: drawThis,
       onMidiNote: onMidiNote
     }
   }(),
 
 
 
-  new1: function () {
-
-    let angle = 0.67;
-    let tree; 
-    let count = 1;
-    let branchAmt = 1000
-    let windDirection = 1;
-
-    function setup() {
-      tree = [];
-      var a = createVector(width / 2, height);
-      var b = createVector(width / 2, height -50);
-      var root = new Branch(a, b)
-
-      tree[0] = root;
-      for(var i = 0; i < branchAmt; i ++){
-        tree.push(tree[i].branch(PI / 6))
-        tree.push(tree[i].branch(-PI / 4))
-      }
-
-      for(var i = tree.length -1; i > (tree.length/2) -1; i--){
-        // tree[i].leafFunc()
+  new: function () {
+   
+    function drawThis() {
+      let yPos = 0
+      let lastPos = 0;
+      background(0);
+      let length = goodColor.length;
+      for(let i = 0; i < length; i++){
+        let xMap = map(i, 0, length, 0, width);
+        fill(goodColor[i][0], goodColor[i][1] ,goodColor[i][2])
+        var xPos = lastPos;
+        if(xPos >= width){
+          xPos = 0;
+          yPos += 10
+        }
+        lastPos = xPos + 10;
+        ellipse(xPos, yPos, 10);
       }
     }
+
+
+    function setupThis() {
+
+    }
+
+   
+ 
+
     
-    function draw() {
-      background(0)
-      
-      for(var i = 0; i < tree.length; i++){
-        let wind = createVector(0.1, 0);
-        // tree[i].applyWind(wind);
-        // tree[i].update();
-        tree[i].show();
-      }
-      if(count % 100 == 0){
-        windDirection = -windDirection;
-      }
-      count++;
-    }
 
-    function Branch(start, end) {
-      this.start = start;
-      this.end = end;
-      this.vel = createVector(0, 0);
-      this.acc = createVector(0, 0);
-    }
+    function mouseClicked() {
+     
+    };
 
-    Branch.prototype.show = function(){
-      stroke(255);
-      line(this.start.x, this.start.y, this.end.x, this.end.y);
-      fill(255, 0, 0)
-      if(this.leaf){
-        ellipse(this.leaf.x, this.leaf.y, 10)
-      }
-    }
 
-    Branch.prototype.branch = function(rote){
-      var dir = p5.Vector.sub(this.end, this.start);
-      dir.rotate(rote);
-      dir.mult(angle);
-      var newEnd = p5.Vector.add(this.end, dir);
-      var b = new Branch(this.end, newEnd);
-      return b;
-    }
 
-    Branch.prototype.leafFunc = function () {
-      this.leaf = createVector(this.end.x, this.end.y)
-    }
-
-    Branch.prototype.applyWind = function(force){
-      // force = force.normalize()
-      this.acc = force;
-    }
-
-    Branch.prototype.update = function () {
-      this.vel = this.acc;
-      // this.vel.add(this.acc);
-      if(windDirection == 1){
-        this.end.add(this.vel);
-        this.leaf ? this.leaf.add(this.vel) : null;
-        
-      } else {
-        this.leaf ? this.leaf.sub(this.vel) : null;
-        this.end.sub(this.vel);
-      }
-    }
 
     function onMidiNote(note, velocity) {
 
     }
 
     return {
-      setup: setup,
-      draw: draw,
-      onMidiNote: onMidiNote
+      setupThis: setupThis,
+      drawThis: drawThis,
+      onMidiNote: onMidiNote,
+      mouseClicked: mouseClicked
     }
   }(),
 }
