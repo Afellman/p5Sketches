@@ -9,7 +9,7 @@ let maxPal = 512;
 let numPal = 0;
 let goodColor = [];
 
-var currentSketch = "walker";
+var currentSketch = "rings";
 var alphaNum = 0;
 
 var sketchArray = Object.keys(sketches);
