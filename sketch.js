@@ -9,7 +9,7 @@ let maxPal = 512;
 let numPal = 0;
 let goodColor = [];
 
-var currentSketch = "bouncyBalls";
+var currentSketch = "walker";
 var alphaNum = 0;
 
 var sketchArray = Object.keys(sketches);
@@ -19,13 +19,14 @@ var sketchArray = Object.keys(sketches);
  * P5 Functions
  *************************************************/
 
-// function preload() {
-//   if (location.href.indexOf('file') !== -1 || location.href.indexOf('http://127.0.0.1') !== -1) {
-//     // Load sound instead of using mic
-//     song = loadSound('./pieces.mp3');
-//     isSong = true;
-//   }
-// }
+function preload() {
+  // if (location.href.indexOf('file') !== -1 || location.href.indexOf('http://127.0.0.1') !== -1) {
+  //   // Load sound instead of using mic
+  //   song = loadSound('./pieces.mp3');
+  //   isSong = true;
+  // }
+  img = loadImage(imagePath);
+}
 
 function setup() {
   createCanvas(windowWidth, windowHeight);
@@ -185,44 +186,41 @@ function getPixel(context, x, y) {
 function takeColor(path) {
   var canvas = document.getElementById('defaultCanvas0');
   var context = canvas.getContext('2d');
-  loadImage(path, function (b) {
-    image(b,0,0);
-    console.log(b)
-    for (let x = 0; x < b.width; x++) {
-      for (let y = 0; y < b.height; y++) {
-        let c = getPixel(context, x, y);
-        let exists = false;
-        for (let n = 0; n < numPal; n++) {
-          if (c == goodColor[n]) {
-            exists = true;
-            break;
-          }
+  image(img,0,0);
+  for (let x = 0; x < img.width; x+=10) {
+    for (let y = 0; y < img.height; y+=10) {
+      let c = getPixel(context, x, y);
+      let exists = false;
+      for (let n = 0; n < numPal; n++) {
+        if (c == goodColor[n]) {
+          exists = true;
+          break;
         }
-        if (!exists) {
-          // add color to pal
-          if (numPal < maxPal) {
-            goodColor[numPal] = c;
-            numPal++;
+      }
+      if (!exists) {
+        // add color to pal
+        if (numPal < maxPal) {
+          goodColor[numPal] = c;
+          numPal++;
+        } else {
+          break;
+        }
+      }
+      if (random(10000) < 100) {
+        if (numPal < maxPal) {
+          // pump black or white into palette
+          if (random(100) < 50) {
+            goodColor[numPal] = '#FFFFFF';
+            print("w");
           } else {
-            break;
+            goodColor[numPal] = '#000000';
+            print("b");
           }
-        }
-        if (random(10000) < 100) {
-          if (numPal < maxPal) {
-            // pump black or white into palette
-            if (random(100) < 50) {
-              goodColor[numPal] = '#FFFFFF';
-              print("w");
-            } else {
-              goodColor[numPal] = '#000000';
-              print("b");
-            }
-            numPal++;
-          }
+          numPal++;
         }
       }
     }
-  });
+  }
 }
 
 /*************************************************

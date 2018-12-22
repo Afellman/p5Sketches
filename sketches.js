@@ -25,7 +25,6 @@ let sketches = {
       }
 
       noFill();
-      strokeWeight(3);
       smooth(1)
     }
 
@@ -114,8 +113,8 @@ let sketches = {
   *************************************************/
   walker: function () {
     let walkerArray = [];
-    let walkerAmt = 250;
-    let scale = 4
+    let walkerAmt = 1000;
+    let scale = 1
 
     function setupThis() {
       for (let i = 0; i < walkerAmt; i++) {
@@ -136,11 +135,13 @@ let sketches = {
     function Walker() {
       this.x = width / 2;
       this.y = height / 2;
+      this.color = someColor();
     }
+
     Walker.prototype.display = function () {
       noStroke();
-      let color = someColor();
-      fill(color[0], color[1], color[2], 10)
+      
+      fill(this.color[0], this.color[1], this.color[2], 10)
       // fill(255, 10); 
       ellipse(this.x, this.y, scale);
     }
@@ -196,7 +197,7 @@ let sketches = {
     let direction = 1
 
     function setupThis() {
-      timer = 1
+      timer = 0
       lines = [];
       background(0)
       for (let i = 0; i < lineAmt; i++) {
@@ -216,16 +217,16 @@ let sketches = {
     }
 
     function drawThis() {
-      timer += .05 * direction;
+      timer += .005 * direction;
       background(10, 30)
-      stroke(100, 60)
       for (let i = 0; i < lineAmt; i++) {
+        lines[i].display(i);
         lines[i].wave(i)
-        line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)
+        
       }
-      if (timer > 100) {
+      if (timer > 3) {
         direction = -direction
-      } else if (timer < -100) {
+      } else if (timer < -3) {
         direction = -direction
       }
     }
@@ -236,6 +237,13 @@ let sketches = {
       this.y1 = y1;
       this.x2 = x2
       this.y2 = y2;
+      this.color = someColor();
+    }
+
+    Line.prototype.display = function(i) {
+      stroke(this.color[0], this.color[1], this.color[2], 200)
+      line(lines[i].x1, lines[i].y1, lines[i].x2, lines[i].y2)      
+
     }
 
     Line.prototype.wave = function (i) {
@@ -271,7 +279,6 @@ let sketches = {
   *************************************************/
   swarm: function () {
 
-    let vectors;
     let points;
     let pointsAmt;
 
@@ -294,6 +301,7 @@ let sketches = {
     }
 
     function Point() {
+      this.color = someColor();
       this.pos = createVector(width / 2, height / 2);
       this.vel = createVector(0);
 
@@ -303,22 +311,30 @@ let sketches = {
       // Can use i as first argument of sub to have each point follow the previous one
       // i = i + 1;
       // i == pointsAmt ? i = 0 : i = i;
+      // let prev = points[i].pos;
 
       let iMap = map(i, 0, pointsAmt, 0, 360);
       let rand = createVector(random(-4, 4), random(-4, 4));
-      let rad = radians(iMap)
-      let sine = mouseX + sin(rad) * 75
-      let cosine = mouseY + cos(rad) * 75
-      let prev = createVector(sine, cosine);
-      this.acc = p5.Vector.sub(prev, this.pos);
-      this.acc.normalize()
-      this.acc.add(rand);
-      this.acc.mult(2);
-      // this.vel.add(this.acc)
-      this.pos.add(this.acc);
+      if(mouseX < width - 5 && mouseX > 5 && mouseY < height -5 && mouseY > 5){
+
+        let rad = radians(iMap)
+        let sine = mouseX + sin(rad) * 75
+        let cosine = mouseY + cos(rad) * 75
+        let prev = createVector(sine, cosine);
+        this.acc = p5.Vector.sub(prev, this.pos);
+        this.acc.normalize()
+        this.acc.add(rand);
+        this.acc.mult(2);
+        // this.vel.add(this.acc)
+        this.pos.add(this.acc);
+      } else {
+        this.pos.add(rand);
+      }
     }
     Point.prototype.display = function () {
-      stroke(255, 80);
+
+      stroke(this.color[0], this.color[1], this.color[2], 80);
+      
       // fill(255, 80);
       ellipse(this.pos.x, this.pos.y, 20);
     }
