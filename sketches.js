@@ -1,7 +1,6 @@
 /*
   Module of different p5 sketches. Each on can be plugged into a sketch.js file,
   calling their setupThis and drawThis functions in their respective p5 functions.
-
 */
 
 let sketches = {
@@ -23,7 +22,6 @@ let sketches = {
       for (var i = 0; i < 100; i++) {
         circles.push(new _Ellipse())
       }
-
       noFill();
       smooth(1)
     }
@@ -100,49 +98,64 @@ let sketches = {
         }
       }
     }
+
+    function mouseClicked() {
+     
+    };
+
     return {
       setupThis: setupThis,
       drawThis: drawThis,
-      onMidiNote: onMidiNote
+      onMidiNote: onMidiNote,
+      mouseClicked : mouseClicked
     }
   }(),
-
 
   /*************************************************
    * Random Walker 
   *************************************************/
   walker: function () {
     let walkerArray = [];
-    let walkerAmt = 1000;
-    let scale = 1
+    let walkerAmt = 5;
+    let scale = 10;
+    let pixelOccupiedX = [];
+    let pixelOccupiedY = [];
 
     function setupThis() {
       for (let i = 0; i < walkerAmt; i++) {
-        walkerArray.push(new Walker());
+        walkerArray.push(new Walker(i));
       }
       background(0);
     }
 
     function drawThis() {
-      for (let i = 0; i < walkerAmt; i++) {
+      background(0)
+      let length = walkerArray.length;
+      for (let i = 0; i < length; i++) {
         walkerArray[i].display();
+        walkerArray[i].checkCollison();
         walkerArray[i].step();
+        walkerArray[i].preventOffScreen();
       }
     }
 
     // Walker constructor
 
-    function Walker() {
-      this.x = width / 2;
-      this.y = height / 2;
-      this.color = someColor();
+    function Walker(i, x, y, color) {
+      this.index = i;
+      this.x = x || width / 2;
+      this.y = y || height / 2;
+      this.color = color || someColor();
+      pixelOccupiedX[this.x] = 1;
+      pixelOccupiedY[this.y] = 1;
     }
 
     Walker.prototype.display = function () {
       noStroke();
+      fill(this.color[0], this.color[1], this.color[2]);
+      // fill(255, 10);
       
-      fill(this.color[0], this.color[1], this.color[2], 10)
-      // fill(255, 10); 
+      // fill(255);
       ellipse(this.x, this.y, scale);
     }
     // Function to "step" the walker in one random direction 
@@ -150,34 +163,74 @@ let sketches = {
     Walker.prototype.step = function () {
       let stepX = (int(random(3)) - 1);
       let stepY = (int(random(3)) - 1);
-      this.preventOffScreen();
+
+      pixelOccupiedX[this.x] = null;
+      pixelOccupiedY[this.y] = null;
+      
       this.x += stepX * scale;
       this.y += stepY * scale;
+      
+      pixelOccupiedX[this.x] = this.index;
+      pixelOccupiedY[this.y] = this.index;
     }
 
     // Function to stop the walker from going off the screen. If the walkers
     Walker.prototype.preventOffScreen = function () {
       if (this.x < 1) {
-        this.x += scale
+        this.x += scale;
       } else if (this.x > width - 1) {
-        this.x -= scale
+        this.x -= scale;
       } else if (this.y < 1) {
-        this.y += scale
+        this.y += scale;
       } else if (this.y > height - 1) {
-        this.y -= scale
+        this.y -= scale;
       }
     }
-    // Low opacity black line that sweeps left and right to slowying fade out the walker trail.
 
+    Walker.prototype.checkCollison = function() {
+      var walkerAtX = pixelOccupiedX[this.x]
+      var walkerAtY = pixelOccupiedY[this.y]
+      if(walkerAtX != null && walkerAtX !== undefined && walkerAtX == walkerAtY){
+        // var gaus = randomGaussian(30, 2);
+        // if(gaus )
+        var ran = Math.random();
+        if(ran < .04){
+          walkerArray[walkerAtX].removeWalker();
+          this.removeWalker();
+        } else {
+          this.reproduce();
+        }
+        // console.log(gaus);
+        // this.reproduce();
+      }
+    }
+
+    Walker.prototype.reproduce = function(){
+      var i = walkerArray.length -1;
+      walkerArray.push(new Walker(i, this.x, this.y, this.color));
+      
+    }
+
+    Walker.prototype.removeWalker = function() {
+      walkerArray.splice(1, this.index);
+      pixelOccupiedX[this.x] = null;
+      pixelOccupiedY[this.y] = null;
+
+    }
 
     function onMidiNote(note, velocity) {
 
     }
 
+    function mouseClicked() {
+     
+    };
+
     return {
       setupThis: setupThis,
       drawThis: drawThis,
-      onMidiNote: onMidiNote
+      onMidiNote: onMidiNote,
+      mouseClicked : mouseClicked
     }
   }(),
 
@@ -267,10 +320,14 @@ let sketches = {
       }
     }
 
+    function mouseClicked() {
+     
+    };
     return {
       setupThis: setupThis,
       drawThis: drawThis,
-      onMidiNote: onMidiNote
+      onMidiNote: onMidiNote,
+      mouseClicked : mouseClicked
     }
   }(),
 
@@ -343,10 +400,15 @@ let sketches = {
 
     }
 
+    function mouseClicked() {
+     
+    };
+
     return {
       setupThis: setupThis,
       drawThis: drawThis,
-      onMidiNote: onMidiNote
+      onMidiNote: onMidiNote,
+      mouseClicked : mouseClicked
     }
   }(),
 
@@ -387,7 +449,7 @@ let sketches = {
         particles[i].display();
       }
     }
-
+    
     function Particle(_size, x, y) {
       this.pos = createVector(x, y);
       this.vel = createVector(0, 0);
@@ -430,6 +492,10 @@ let sketches = {
       ellipse(this.pos.x, this.pos.y, this.size)
     }
 
+    function mouseClicked() {
+     
+    };
+
     function onMidiNote(note, velocity) {
 
     }
@@ -437,7 +503,8 @@ let sketches = {
     return {
       setupThis: setupThis,
       drawThis: drawThis,
-      onMidiNote: onMidiNote
+      onMidiNote: onMidiNote,
+      mouseClicked : mouseClicked
     }
   }(),
 
@@ -445,31 +512,14 @@ let sketches = {
 
   new: function () {
    
-    function drawThis() {
-      let yPos = 0
-      let lastPos = 0;
-      background(0);
-      let length = goodColor.length;
-      for(let i = 0; i < length; i++){
-        let xMap = map(i, 0, length, 0, width);
-        fill(goodColor[i][0], goodColor[i][1] ,goodColor[i][2])
-        var xPos = lastPos;
-        if(xPos >= width){
-          xPos = 0;
-          yPos += 10
-        }
-        lastPos = xPos + 10;
-        ellipse(xPos, yPos, 10);
-      }
-    }
-
-
     function setupThis() {
 
     }
 
    
- 
+    function drawThis() {
+   
+    }
 
     
 
