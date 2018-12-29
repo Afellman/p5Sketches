@@ -4,7 +4,7 @@ var devices;
 var deviceIndex;
 var song;
 var isSong = false;
-let imagePath = "./the-unspoken-path-to-another.jpg";
+let imagePath = "./images/20181218_111712.jpg";
 let maxPal = 512;
 let numPal = 0;
 let goodColor = [];

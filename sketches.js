@@ -115,44 +115,46 @@ let sketches = {
    * Random Walker 
   *************************************************/
   walker: function () {
-    let walkerArray = [];
-    let walkerAmt = 5;
-    let scale = 10;
-    let pixelOccupiedX = [];
-    let pixelOccupiedY = [];
+    let walkers = {};
+    let walkerAmt = 500;
+    let scale = 1;
+    let pixelOccupiedX = {};
+    let pixelOccupiedY = {};
+    let reproductionRate = .60;
 
     function setupThis() {
-      for (let i = 0; i < walkerAmt; i++) {
-        walkerArray.push(new Walker(i));
+      // frameRate(10)
+      for (let i = 1; i < walkerAmt +1; i++) {
+        var rand = Math.round(Math.random() * 999999999);
+        walkers[rand] = new Walker(rand);
       }
       background(0);
     }
 
     function drawThis() {
-      background(0)
-      let length = walkerArray.length;
-      for (let i = 0; i < length; i++) {
-        walkerArray[i].display();
-        walkerArray[i].checkCollison();
-        walkerArray[i].step();
-        walkerArray[i].preventOffScreen();
+      // background(0)
+      for (let i in walkers) {
+        walkers[i].display();
+        walkers[i].step();
+        if(walkers[i]) {
+          walkers[i].preventOffScreen();
+        }
       }
     }
 
     // Walker constructor
 
-    function Walker(i, x, y, color) {
-      this.index = i;
+    function Walker(name, x, y, color) {
+      this.name = name;
       this.x = x || width / 2;
       this.y = y || height / 2;
       this.color = color || someColor();
-      pixelOccupiedX[this.x] = 1;
-      pixelOccupiedY[this.y] = 1;
+    
     }
 
     Walker.prototype.display = function () {
       noStroke();
-      fill(this.color[0], this.color[1], this.color[2]);
+      fill(this.color[0], this.color[1], this.color[2], 10);
       // fill(255, 10);
       
       // fill(255);
@@ -164,14 +166,16 @@ let sketches = {
       let stepX = (int(random(3)) - 1);
       let stepY = (int(random(3)) - 1);
 
+      
       pixelOccupiedX[this.x] = null;
       pixelOccupiedY[this.y] = null;
       
       this.x += stepX * scale;
       this.y += stepY * scale;
+      this.checkCollison();
       
-      pixelOccupiedX[this.x] = this.index;
-      pixelOccupiedY[this.y] = this.index;
+      pixelOccupiedX[this.x] = this.name;
+      pixelOccupiedY[this.y] = this.name;
     }
 
     // Function to stop the walker from going off the screen. If the walkers
@@ -190,15 +194,14 @@ let sketches = {
     Walker.prototype.checkCollison = function() {
       var walkerAtX = pixelOccupiedX[this.x]
       var walkerAtY = pixelOccupiedY[this.y]
-      if(walkerAtX != null && walkerAtX !== undefined && walkerAtX == walkerAtY){
+      if(walkerAtX !== null && walkerAtX !== undefined && walkerAtX == walkerAtY){
         // var gaus = randomGaussian(30, 2);
         // if(gaus )
         var ran = Math.random();
-        if(ran < .04){
-          walkerArray[walkerAtX].removeWalker();
-          this.removeWalker();
-        } else {
+        if(ran < reproductionRate){
           this.reproduce();
+        } else {
+          this.removeWalker();
         }
         // console.log(gaus);
         // this.reproduce();
@@ -206,16 +209,21 @@ let sketches = {
     }
 
     Walker.prototype.reproduce = function(){
-      var i = walkerArray.length -1;
-      walkerArray.push(new Walker(i, this.x, this.y, this.color));
-      
+      var rand = Math.round(Math.random() * 999999999);
+      walkers[rand] = new Walker(rand, this.x, this.y, this.color);
+      updateCount(1);
     }
 
     Walker.prototype.removeWalker = function() {
-      walkerArray.splice(1, this.index);
+      delete walkers[this.name]
       pixelOccupiedX[this.x] = null;
       pixelOccupiedY[this.y] = null;
+      updateCount(-1);
+    }
 
+
+    function updateCount(upDown) {
+      walkerAmt += upDown;
     }
 
     function onMidiNote(note, velocity) {
