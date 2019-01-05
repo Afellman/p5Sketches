@@ -1,18 +1,18 @@
-var sound;
-var fft;
-var devices;
-var deviceIndex;
-var song;
-var isSong = false;
+let sound;
+let devices;
+let deviceIndex;
+let song;
+let isSong = false;
 let imagePath = "./images/20181218_111712.jpg";
 let maxPal = 512;
 let numPal = 0;
 let goodColor = [];
 
-var currentSketch = "rings";
-var alphaNum = 0;
+let currentSketch = "new1";
 
-var sketchArray = Object.keys(sketches);
+let alphaNum = 0;
+
+let sketchArray = Object.keys(sketches);
 
 
 /*************************************************
@@ -20,11 +20,11 @@ var sketchArray = Object.keys(sketches);
  *************************************************/
 
 function preload() {
-  // if (location.href.indexOf('file') !== -1 || location.href.indexOf('http://127.0.0.1') !== -1) {
-  //   // Load sound instead of using mic
-  //   song = loadSound('./pieces.mp3');
-  //   isSong = true;
-  // }
+  if (location.href.indexOf('file') !== -1 || location.href.indexOf('http://127.0.0.1') !== -1) {
+    // Load sound instead of using mic
+    // song = loadSound('./pieces.mp3');
+    // isSong = true;
+  }
   img = loadImage(imagePath);
 }
 
@@ -59,20 +59,21 @@ function setup() {
 
   //   showDeviceSelect();
   // });
+
+
   background(0);
-  // Switching to first sketch to initialize 
-  switchSketch();
+  sketches[currentSketch].setupThis();
 }
 
 
 function draw() {
   
   /* Uncomment this to use the mic */
-  // var vol = amp.getLevel();
-  var vol = 0; 
+  // let vol = amp.getLevel();
+  let vol = 0; 
   // Calling sketch specific draw function.
   // Need to scale down volume...
-  var volMapped = map(vol, 0, 1, 0, 100);
+  let volMapped = map(vol, 0, 1, 0, 100);
   sketches[currentSketch].drawThis(volMapped / 4);
   fadeOutz();
 }
@@ -84,14 +85,14 @@ function draw() {
  *************************************************/
 
 function switchDeviceDom(prevIndex, newIndex) {
-  var deviceChildren = document.getElementById('deviceSelect').childNodes;
+  let deviceChildren = document.getElementById('deviceSelect').childNodes;
   deviceChildren[prevIndex].setAttribute('id', '');
   deviceChildren[newIndex].setAttribute('id', 'selectedDevice');
   showDeviceSelect()
 }
 
 function showDeviceSelect() {
-  var div = document.getElementById('deviceSelectDiv');
+  let div = document.getElementById('deviceSelectDiv');
   div.className = "showMe";
   setTimeout(function () {
     div.className = 'hideMe';
@@ -103,8 +104,8 @@ function fadeOutz() {
   rect(0, 0, width, height);
 }
 
-function sketchTransition(velocity){
-  var velMapped = map(velocity, 1, 127, 0, 255);
+function sketchTransitionMidi(velocity){
+  let velMapped = map(velocity, 1, 127, 0, 255);
   alphaNum = velMapped;
 }
 
@@ -112,29 +113,29 @@ function mouseClicked(){
   sketches[currentSketch].mouseClicked();
 };
 // USE THESE TWO TO INITIATE A SMOOTH TRANSITION
-// function sketchTransition() {
-//   var color;
-//   var trans = setInterval(function () {
-//     alphaNum++
-//     if (alphaNum == 255) {
-//       switchSketch();
-//       sketchTransition2(trans);
-//     }
-//   }, 10);
-// }
+function sketchTransition() {
+  let color;
+  let trans = setInterval(function () {
+    alphaNum++
+    if (alphaNum == 255) {
+      switchSketch();
+      sketchTransition2(trans);
+    }
+  }, 10);
+}
 
-// function sketchTransition2(trans) {
-//   clearInterval(trans);
-//   var trans2 = setInterval(function () {
-//     alphaNum--
-//     if (alphaNum == 0) {
-//       clearInterval(trans2);
-//     }
-//   }, 10)
-// }
+function sketchTransition2(trans) {
+  clearInterval(trans);
+  let trans2 = setInterval(function () {
+    alphaNum--
+    if (alphaNum == 0) {
+      clearInterval(trans2);
+    }
+  }, 10)
+}
 
 function switchSketch() {
-  var nextPos = sketchArray.indexOf(currentSketch) + 1;
+  let nextPos = sketchArray.indexOf(currentSketch) + 1;
   if (nextPos < sketchArray.length){
     currentSketch = sketchArray[nextPos];
   } else {
@@ -144,12 +145,12 @@ function switchSketch() {
 }
 
 function devicesToDom(devices) {
-  var div = document.getElementById('deviceSelectDiv');
-  var ul = document.createElement('ul');
+  let div = document.getElementById('deviceSelectDiv');
+  let ul = document.createElement('ul');
   ul.setAttribute('id', 'deviceSelect');
-  for (var i = 0; i < devices.length; i++) {
-    var li = document.createElement('li');
-    var text = document.createTextNode('Device: ' + devices[i].deviceId);
+  for (let i = 0; i < devices.length; i++) {
+    let li = document.createElement('li');
+    let text = document.createTextNode('Device: ' + devices[i].deviceId);
     li.appendChild(text);
     ul.appendChild(li);
   }
@@ -160,10 +161,10 @@ function devicesToDom(devices) {
 
 (function sketchesToDom(){
   console.log(sketchArray)
-  var ul = document.getElementById('sketchSelectDiv');
-  for(var i = 0; i < sketchArray.lenth; i++){
-    var li = document.createElement('li');
-    var text = document.createTextNode('Sketch:' + sketchArray[i])
+  let ul = document.getElementById('sketchSelectDiv');
+  for(let i = 0; i < sketchArray.lenth; i++){
+    let li = document.createElement('li');
+    let text = document.createTextNode('Sketch:' + sketchArray[i])
     li.setAttribute('id', sketchArray[i]);
     li.appendChild(text)
     ul.appendChild(li)  
@@ -184,8 +185,8 @@ function getPixel(context, x, y) {
 }
 
 function takeColor(path) {
-  var canvas = document.getElementById('defaultCanvas0');
-  var context = canvas.getContext('2d');
+  let canvas = document.getElementById('defaultCanvas0');
+  let context = canvas.getContext('2d');
   image(img,0,0);
   for (let x = 0; x < img.width; x+=10) {
     for (let y = 0; y < img.height; y+=10) {
@@ -228,7 +229,7 @@ function takeColor(path) {
  *************************************************/
 
 document.addEventListener('keydown', function (event) {
-  var prevIndex = deviceIndex;
+  let prevIndex = deviceIndex;
 
   // Switch to next device on "T" Keypress
   if (event.keyCode == 84) {
@@ -242,14 +243,11 @@ document.addEventListener('keydown', function (event) {
     // Start transition on "Enter" key press
   } else if (event.keyCode == 13) {
     sketchTransition();
+  } else if(event.keyCode == 32){
+    switchSketch();
   }
 })
 
-document.addEventListener('keydown', function(event){
-   if(event.keyCode == 32){
-     switchSketch();
-   }
-})
 
 /*************************************************
  * MIDI Stuff
@@ -258,15 +256,15 @@ document.addEventListener('keydown', function(event){
 navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 
 function onMIDISuccess(midiAccess) {
-  for (var input of midiAccess.inputs.values()) {
+  for (let input of midiAccess.inputs.values()) {
     input.onmidimessage = getMIDIMessage;
   }
 }
 
 function getMIDIMessage(midiMessage) {
-  var command = midiMessage.data[0];
-  var note = midiMessage.data[1];
-  var velocity = (midiMessage.data.length > 2) ? midiMessage.data[2] : 0;
+  let command = midiMessage.data[0];
+  let note = midiMessage.data[1];
+  let velocity = (midiMessage.data.length > 2) ? midiMessage.data[2] : 0;
   console.log(note, velocity, command)
   if(velocity > 0){
     switch(note){
@@ -274,7 +272,7 @@ function getMIDIMessage(midiMessage) {
       switchSketch();
       break;
       case 10:
-      sketchTransition(velocity)
+      sketchTransitionMidi(velocity)
       break;
       default:
       sketches[currentSketch].onMidiNote(note, velocity);

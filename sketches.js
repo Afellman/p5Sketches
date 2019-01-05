@@ -51,7 +51,7 @@ let sketches = {
       if (circles.length > 0) {
         if (circles[0].size > width + 200) {
           circles.splice(0, 1);
-          // circles.push(new _Ellipse()); // to make a new one everytime one is removed
+          circles.push(new _Ellipse()); // to make a new one everytime one is removed
         }
       }
       if (vol > 4.5 && circles.length < 100) {
@@ -100,7 +100,7 @@ let sketches = {
     }
 
     function mouseClicked() {
-     
+      circles.push(new _Ellipse());
     };
 
     return {
@@ -156,7 +156,6 @@ let sketches = {
       noStroke();
       fill(this.color[0], this.color[1], this.color[2], 10);
       // fill(255, 10);
-      
       // fill(255);
       ellipse(this.x, this.y, scale);
     }
@@ -420,7 +419,6 @@ let sketches = {
     }
   }(),
 
-
   /*************************************************
    * Bouncy Balls
   *************************************************/
@@ -516,20 +514,278 @@ let sketches = {
     }
   }(),
 
+  /*************************************************
+   * fft
+  *************************************************/
 
+  fft: function () {
+    let fft
+    let osc;
+    let angle = 0;
+    let colorSwitch = 0;
+    let vertexes
+    function setupThis() {
+      noFill()
+      vertexes = [];
+      fft = new p5.FFT();
+      // osc = new p5.Oscillator();
+      // osc.setType('triangle');
+      // osc.freq(440);
+      // osc.amp(1);
+      // osc.start();
+      color = someColor();
+      song.play()
+      for(let i = 0; i < 360; i ++){
+        vertexes.push(new V())
+      }
+    }
 
-  new: function () {
+    function V() {
+      this.color = someColor();
+    }
+
+    V.prototype.display = function(x, y){
+      stroke(this.color[0], this.color[1], this.color[2])
+      line(x, y, width /2, height /2)
+    }
    
+    function drawThis() {
+      background(25, 75)
+      let mouseMap = map(mouseY, 0, height, 100, 580)
+      // osc.freq(mouseMap);
+      let spectrum = fft.analyze();
+      let length = vertexes.length;
+      beginShape()
+      for(let i = 0; i < length; i++){
+        let specAvg = fft.linAverages(360)
+        let specMap = map(specAvg[i], 0, 255, 0, 360);
+        let x = (width /2) + sin(angle + i)  * (specMap * 1.5);
+        let y = (height /2) + cos(angle + i) * (specMap * 1.5);
+        // stroke(color[0], color[1], color[2])
+        vertexes[i].display(x, y)
+        // vertex(x, y)
+      }
+      endShape()
+      colorSwitch ++
+      angle += 0.001
+      if(colorSwitch % 25 == 0){
+        color = someColor();
+      }
+    }
+
+    
+
+    function mouseClicked() {
+     
+    };
+
+
+
+
+    function onMidiNote(note, velocity) {
+
+    }
+
+    return {
+      setupThis: setupThis,
+      drawThis: drawThis,
+      onMidiNote: onMidiNote,
+      mouseClicked: mouseClicked
+    }
+  }(),
+
+  /*************************************************
+   * Bubbles
+  *************************************************/
+  bubbles: function () {
+    let bubbles;
+    let bubblesAmt = 100;
+    let maxSize = 350;
+
+    function setupThis() {
+      bubbles = []
+      for(let i = 0; i < bubblesAmt; i ++){
+        let s = random(100, maxSize);
+        bubbles.push(new Bubble(s, random(width), random(height), someColor()))
+      }
+    }
+
+   
+    function drawThis() {
+      background(0)
+      let length = bubbles.length;
+      for(let i = 0; i < length; i ++){
+        bubbles[i].p0p(i);
+        bubbles[i].display();
+        bubbles[i].avoidMouse();
+      }
+    }
+
+    
+    function Bubble(size, x, y, color){
+      this.pos = createVector(x, y);
+      this.size = size;
+      this.color = color;
+      this.alpha = 50;
+      this.growSpeed = .5;
+      this.vel = createVector(0, 0)
+    }
+
+    Bubble.prototype.display = function(){
+      stroke(100, this.alpha);
+      fill(this.color[0],this.color[1],this.color[2], this.alpha);
+      ellipse(this.pos.x, this.pos.y, this.size)
+    }
+
+    Bubble.prototype.p0p = function (i) {
+      if(this.size > maxSize){
+        this.alpha --
+      }
+      if(this.alpha == 0){
+        bubbles.splice(i, 1)
+        bubbles.push(new Bubble(0, random(width), random(height), someColor()))
+      }
+      // this.growSpeed += .05
+      this.size += this.growSpeed;
+    }
+
+    Bubble.prototype.avoidMouse = function() { 
+      let mouse = createVector(mouseX, mouseY);
+      if(dist(mouse.x, mouse.y, this.pos.x, this.pos.y) < (this.size /2) + 5){
+        let acc = p5.Vector.sub(this.pos, mouse);
+        acc.normalize()
+        acc.mult(5)
+        // this.vel.add(acc);
+        this.pos.add(acc);
+      }
+    }
+
+    function mouseClicked() {
+     
+    };
+
+
+
+
+    function onMidiNote(note, velocity) {
+
+    }
+
+    return {
+      setupThis: setupThis,
+      drawThis: drawThis,
+      onMidiNote: onMidiNote,
+      mouseClicked: mouseClicked
+    }
+  }(),
+
+  lissajous: function () {
+    let particles;
+    let particleAmt = 5000;
+    let angle;
+
+    function setupThis() {
+      background(0)
+      angle = 0;
+      particles = [];
+      for(let i = 0; i < particleAmt; i ++){
+        particles.push(new Particle(i))
+      }
+    }
+
+   
+    function drawThis() {
+      background(0, 100);
+      let length = particles.length;
+      angle += 0.01
+      for(let i = 0; i < length; i ++) {
+        particles[i].display();
+        particles[i].move(i);
+      }
+    }
+
+    function Particle(i) {
+      this.x = width/2 + cos(i * 1) * 100;
+      this.y = height / 2 + sin(i * 1) * 100;
+    }
+
+    Particle.prototype.display = function(){
+      stroke(255);
+      point(this.x, this.y);
+    }
+
+    Particle.prototype.move = function (i) {
+      let mouseMapY = Math.floor(map(mouseY, 0, height, 0, 100))
+      let mouseMapX = Math.floor(map(mouseX, 0, width, 0, 500))
+      this.x = width/2 + cos(i * 125 + angle) * width /4;
+      this.y = height / 2 + sin(i * 1) * height /2;
+    }
+
+    function mouseClicked() {
+     
+    };
+
+
+
+
+    function onMidiNote(note, velocity) {
+
+    }
+
+    return {
+      setupThis: setupThis,
+      drawThis: drawThis,
+      onMidiNote: onMidiNote,
+      mouseClicked: mouseClicked
+    }
+  }(),
+
+  new1: function () {
+
+
     function setupThis() {
 
     }
 
    
     function drawThis() {
-   
+      
     }
 
-    
+
+
+    function mouseClicked() {
+     
+    };
+
+
+
+
+    function onMidiNote(note, velocity) {
+
+    }
+
+    return {
+      setupThis: setupThis,
+      drawThis: drawThis,
+      onMidiNote: onMidiNote,
+      mouseClicked: mouseClicked
+    }
+  }(),
+  
+  new: function () {
+
+
+    function setupThis() {
+
+    }
+
+   
+    function drawThis() {
+      
+    }
+
+
 
     function mouseClicked() {
      
