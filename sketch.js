@@ -8,7 +8,7 @@ let maxPal = 512;
 let numPal = 0;
 let goodColor = [];
 
-let currentSketch = "new1";
+let currentSketch = "lissajous";
 
 let alphaNum = 0;
 
@@ -67,10 +67,10 @@ function setup() {
 
 
 function draw() {
-  
+
   /* Uncomment this to use the mic */
   // let vol = amp.getLevel();
-  let vol = 0; 
+  let vol = 0;
   // Calling sketch specific draw function.
   // Need to scale down volume...
   let volMapped = map(vol, 0, 1, 0, 100);
@@ -104,12 +104,12 @@ function fadeOutz() {
   rect(0, 0, width, height);
 }
 
-function sketchTransitionMidi(velocity){
+function sketchTransitionMidi(velocity) {
   let velMapped = map(velocity, 1, 127, 0, 255);
   alphaNum = velMapped;
 }
 
-function mouseClicked(){
+function mouseClicked() {
   sketches[currentSketch].mouseClicked();
 };
 // USE THESE TWO TO INITIATE A SMOOTH TRANSITION
@@ -136,7 +136,7 @@ function sketchTransition2(trans) {
 
 function switchSketch() {
   let nextPos = sketchArray.indexOf(currentSketch) + 1;
-  if (nextPos < sketchArray.length){
+  if (nextPos < sketchArray.length) {
     currentSketch = sketchArray[nextPos];
   } else {
     currentSketch = sketchArray[0];
@@ -159,15 +159,15 @@ function devicesToDom(devices) {
 }
 
 
-(function sketchesToDom(){
+(function sketchesToDom() {
   console.log(sketchArray)
   let ul = document.getElementById('sketchSelectDiv');
-  for(let i = 0; i < sketchArray.lenth; i++){
+  for (let i = 0; i < sketchArray.lenth; i++) {
     let li = document.createElement('li');
     let text = document.createTextNode('Sketch:' + sketchArray[i])
     li.setAttribute('id', sketchArray[i]);
     li.appendChild(text)
-    ul.appendChild(li)  
+    ul.appendChild(li)
   }
 })();
 
@@ -187,9 +187,9 @@ function getPixel(context, x, y) {
 function takeColor(path) {
   let canvas = document.getElementById('defaultCanvas0');
   let context = canvas.getContext('2d');
-  image(img,0,0);
-  for (let x = 0; x < img.width; x+=10) {
-    for (let y = 0; y < img.height; y+=10) {
+  image(img, 0, 0);
+  for (let x = 0; x < img.width; x += 10) {
+    for (let y = 0; y < img.height; y += 10) {
       let c = getPixel(context, x, y);
       let exists = false;
       for (let n = 0; n < numPal; n++) {
@@ -243,7 +243,7 @@ document.addEventListener('keydown', function (event) {
     // Start transition on "Enter" key press
   } else if (event.keyCode == 13) {
     sketchTransition();
-  } else if(event.keyCode == 32){
+  } else if (event.keyCode == 32) {
     switchSketch();
   }
 })
@@ -266,17 +266,17 @@ function getMIDIMessage(midiMessage) {
   let note = midiMessage.data[1];
   let velocity = (midiMessage.data.length > 2) ? midiMessage.data[2] : 0;
   console.log(note, velocity, command)
-  if(velocity > 0){
-    switch(note){
+  if (velocity > 0) {
+    switch (note) {
       case 1:
-      switchSketch();
-      break;
+        switchSketch();
+        break;
       case 10:
-      sketchTransitionMidi(velocity)
-      break;
+        sketchTransitionMidi(velocity)
+        break;
       default:
-      sketches[currentSketch].onMidiNote(note, velocity);
-    } 
+        sketches[currentSketch].onMidiNote(note, velocity);
+    }
   }
 }
 

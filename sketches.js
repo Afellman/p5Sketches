@@ -715,10 +715,10 @@ let sketches = {
     }
 
     Particle.prototype.move = function (i) {
-      let mouseMapY = Math.floor(map(mouseY, 0, height, 0, 100))
-      let mouseMapX = Math.floor(map(mouseX, 0, width, 0, 500))
-      this.x = width/2 + cos(i * 125 + angle) * width /4;
-      this.y = height / 2 + sin(i * 1) * height /2;
+      let mouseMapY = Math.floor(map(mouseY, 0, height, 0, 50));
+      let mouseMapX = Math.floor(map(mouseX, 0, width, 0, 100));
+      this.x = width/2 + cos(i * mouseMapX + angle) * width /4;
+      this.y = height / 2 + sin(i * 1) * height /4;
     }
 
     function mouseClicked() {
