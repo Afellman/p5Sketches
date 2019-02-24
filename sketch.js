@@ -8,7 +8,7 @@ let maxPal = 512;
 let numPal = 0;
 let goodColor = [];
 
-let currentSketch = "new1";
+let currentSketch = "swarm";
 
 let alphaNum = 0;
 

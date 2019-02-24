@@ -117,7 +117,7 @@ let sketches = {
   walker: function () {
     let walkers = {};
     let walkerAmt = 500;
-    let scale = 1;
+    let scale = 5;
     let pixelOccupiedX = {};
     let pixelOccupiedY = {};
     let reproductionRate = .60;
@@ -345,6 +345,8 @@ let sketches = {
 
     let points;
     let pointsAmt;
+    let inc = 0;
+    let goNuts = 1;
 
     function setupThis() {
       points = [];
@@ -356,11 +358,14 @@ let sketches = {
     }
 
     function drawThis() {
-      background(15, 80);
+      inc += 0.02
+      // background(15, 80);
       for (let i = 0; i < pointsAmt; i++) {
         points[i].walk(i);
         points[i].display();
-
+        if(goNuts == -1){
+          points[i].goNuts();
+        }
       }
     }
 
@@ -368,7 +373,7 @@ let sketches = {
       this.color = someColor();
       this.pos = createVector(width / 2, height / 2);
       this.vel = createVector(0);
-
+      this.size = 20
     }
 
     Point.prototype.walk = function (i) {
@@ -381,34 +386,36 @@ let sketches = {
       let rand = createVector(random(-4, 4), random(-4, 4));
       if(mouseX < width - 5 && mouseX > 5 && mouseY < height -5 && mouseY > 5){
 
-        let rad = radians(iMap)
-        let sine = mouseX + sin(rad) * 75
-        let cosine = mouseY + cos(rad) * 75
+        // let rad = radians(iMap)
+        let sine = mouseX + sin(iMap + inc) * this.size
+        let cosine = mouseY + cos(iMap + inc) * this.size
         let prev = createVector(sine, cosine);
         this.acc = p5.Vector.sub(prev, this.pos);
         this.acc.normalize()
-        this.acc.add(rand);
         this.acc.mult(2);
-        // this.vel.add(this.acc)
         this.pos.add(this.acc);
       } else {
         this.pos.add(rand);
       }
+      this.size = dist(mouseX, mouseY, this.pos.x, this.pos.y) + i
     }
-    Point.prototype.display = function () {
 
+    Point.prototype.display = function () {
       stroke(this.color[0], this.color[1], this.color[2], 80);
-      
-      // fill(255, 80);
-      ellipse(this.pos.x, this.pos.y, 20);
+      point(this.pos.x, this.pos.y, this.size);
     }
+
+    Point.prototype.goNuts = function() {
+      let rand = random(0, 50)
+      let randVector = createVector(rand);
+      this.pos.add(randVector);
+    };
 
     function onMidiNote(note, velocity) {
-
     }
-
+    
     function mouseClicked() {
-     
+      goNuts *= -1;
     };
 
     return {
@@ -422,7 +429,6 @@ let sketches = {
   /*************************************************
    * Bouncy Balls
   *************************************************/
-
   bouncyBalls: function () {
 
     let particles;
@@ -527,15 +533,15 @@ let sketches = {
     function setupThis() {
       noFill()
       vertexes = [];
-      fft = new p5.FFT();
+      fft = new p5.FFT(.99);
       // osc = new p5.Oscillator();
       // osc.setType('triangle');
       // osc.freq(440);
       // osc.amp(1);
       // osc.start();
       color = someColor();
-      song.play()
-      for(let i = 0; i < 360; i ++){
+      // song.play()
+      for(let i = 0; i < 100; i ++){
         vertexes.push(new V())
       }
     }
@@ -545,25 +551,24 @@ let sketches = {
     }
 
     V.prototype.display = function(x, y){
+      fill(0, 10, 30, 10)
       stroke(this.color[0], this.color[1], this.color[2])
-      line(x, y, width /2, height /2)
+      rect(x, y, width /2, height /2)
     }
    
     function drawThis() {
-      background(25, 75)
+      background(200, 75)
       let mouseMap = map(mouseY, 0, height, 100, 580)
       // osc.freq(mouseMap);
       let spectrum = fft.analyze();
       let length = vertexes.length;
       beginShape()
       for(let i = 0; i < length; i++){
-        let specAvg = fft.linAverages(360)
+        let specAvg = fft.linAverages(500)
         let specMap = map(specAvg[i], 0, 255, 0, 360);
-        let x = (width /2) + sin(angle + i)  * (specMap * 1.5);
-        let y = (height /2) + cos(angle + i) * (specMap * 1.5);
-        // stroke(color[0], color[1], color[2])
+        let x = (width /4) + sin( + i)  * (specMap * 1.5);
+        let y = (height /4) + cos( + i) * (specMap * 1.5);
         vertexes[i].display(x, y)
-        // vertex(x, y)
       }
       endShape()
       colorSwitch ++
@@ -583,7 +588,7 @@ let sketches = {
 
 
     function onMidiNote(note, velocity) {
-
+      
     }
 
     return {
@@ -679,6 +684,9 @@ let sketches = {
     }
   }(),
 
+  /*************************************************
+   * Lissajous
+  *************************************************/
   lissajous: function () {
     let particles;
     let particleAmt = 5000;
@@ -741,18 +749,51 @@ let sketches = {
   }(),
 
   new1: function () {
+    let circles;
 
-
+    
     function setupThis() {
-
+      circles = [];
+      let x = 100
+      let y = 100
+      for(var i = 0; i < 100; i ++){
+        circles.push(new Circle(x, y))
+        x += 100
+        if(x > width -50){
+          y += 100;
+          x = 100
+        }
+      }
     }
 
    
     function drawThis() {
-      
+      for(var i =0; i < circles.length; i++) {
+       
+          // circles[i].move(xMap, yMap)
+          circles[i].display()
+      }
     }
 
 
+
+    function Circle(x, y) {
+      this.x = x || width /2;
+      this.y = y || height /2;
+      this.color = [];
+      this.size = 100;
+    }
+
+    Circle.prototype.move = function(x, y) {
+      this.x = x;
+      this.y = y;
+    }
+
+    Circle.prototype.display = function() {
+      noFill()
+      stroke(255)
+      ellipse(this.x, this.y, this.size)
+    }
 
     function mouseClicked() {
      
